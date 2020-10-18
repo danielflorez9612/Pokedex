@@ -32,10 +32,25 @@ public class PokeApiMapper {
         return Pokemon.builder()
                 .name(pokemonBO.getPokemon().getName())
                 .weight(pokemonBO.getPokemon().getWeight())
-                .abilities(pokemonBO.getPokemon().getAbilities().stream().map(PokeApiAbilityItem::getAbility).map(PokeApiNamedResource::getName).collect(Collectors.toList()))
-                .type(pokemonBO.getPokemon().getTypes().stream().map(PokeApiTypeItem::getType).map(PokeApiNamedResource::getName).collect(Collectors.joining("/")))
+                .abilities(
+                        pokemonBO.getPokemon().getAbilities().stream()
+                                .map(PokeApiAbilityItem::getAbility)
+                                .map(PokeApiNamedResource::getName)
+                                .collect(Collectors.toList())
+                )
+                .type(
+                        pokemonBO.getPokemon().getTypes().stream()
+                                .map(PokeApiTypeItem::getType)
+                                .map(PokeApiNamedResource::getName)
+                                .collect(Collectors.joining("/"))
+                )
                 .image(pokemonBO.getPokemon().getSprites().getOther().getOfficialArtwork().getFrontDefault())
-                .description(pokemonBO.getPokemonSpecies().getFlavorTextEntries().stream().findFirst().map(FlavorText::getFlavorText).orElse("No description."))
+                .description(
+                        pokemonBO.getPokemonSpecies().getFlavorTextEntries().stream()
+                                .findFirst()
+                                .map(FlavorText::getFlavorText)
+                                .orElse("No description.")
+                )
                 .evolutions(
                         getEvolutionChainFor(pokemonBO.getPokemon().getSpecies(), pokemonBO.getEvolutionChain().getChain()).stream()
                                 .map(ChainLink::getSpecies)
