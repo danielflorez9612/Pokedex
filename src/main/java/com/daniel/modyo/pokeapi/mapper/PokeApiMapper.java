@@ -19,13 +19,12 @@ public class PokeApiMapper {
         if (evolutionChain.getSpecies().getName().equals(species.getName())) {
             return evolutionChain.getEvolvesTo();
         } else {
-            for (ChainLink chainLink : evolutionChain.getEvolvesTo()) {
-                List<ChainLink> chainFrom = getEvolutionChainFor(species, chainLink);
-                if (!chainFrom.isEmpty()) {
-                    return chainFrom;
-                }
-            }
-            return Collections.emptyList();
+            return evolutionChain.getEvolvesTo().stream()
+                    .map(chainLink -> getEvolutionChainFor(species, chainLink))
+                    .filter(chainLinks -> !chainLinks.isEmpty())
+                    .findFirst()
+                    .orElse(Collections.emptyList())
+                    ;
         }
     }
 
