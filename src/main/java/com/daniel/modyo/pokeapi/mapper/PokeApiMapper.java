@@ -5,7 +5,7 @@ import com.daniel.modyo.pokeapi.dto.PokeApiNamedResource;
 import com.daniel.modyo.pokeapi.dto.PokeApiTypeItem;
 import com.daniel.modyo.pokeapi.dto.evolution.ChainLink;
 import com.daniel.modyo.pokeapi.dto.species.FlavorText;
-import com.daniel.modyo.pokeapi.mapper.bo.PokemonBO;
+import com.daniel.modyo.pokeapi.mapper.bo.PokemonDetailBO;
 import com.daniel.modyo.web.dto.Pokemon;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +28,9 @@ public class PokeApiMapper {
         }
     }
 
-    public Pokemon map(PokemonBO pokemonBO) {
+    public Pokemon map(PokemonDetailBO pokemonBO) {
         return Pokemon.builder()
+                .id(pokemonBO.getPokemon().getId())
                 .name(pokemonBO.getPokemon().getName())
                 .weight(pokemonBO.getPokemon().getWeight())
                 .abilities(
@@ -57,6 +58,27 @@ public class PokeApiMapper {
                                 .map(PokeApiNamedResource::getName)
                                 .collect(Collectors.toList())
                 )
+                .build();
+    }
+
+    public Pokemon mapListItem(com.daniel.modyo.pokeapi.dto.Pokemon pokemon) {
+        return Pokemon.builder()
+                .id(pokemon.getId())
+                .name(pokemon.getName())
+                .weight(pokemon.getWeight())
+                .type(
+                        pokemon.getTypes().stream()
+                                .map(PokeApiTypeItem::getType)
+                                .map(PokeApiNamedResource::getName)
+                                .collect(Collectors.joining("/"))
+                )
+                .abilities(
+                        pokemon.getAbilities().stream()
+                                .map(PokeApiAbilityItem::getAbility)
+                                .map(PokeApiNamedResource::getName)
+                                .collect(Collectors.toList())
+                )
+                .image(pokemon.getSprites().getOther().getOfficialArtwork().getFrontDefault())
                 .build();
     }
 }

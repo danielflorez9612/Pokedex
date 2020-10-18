@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+
 @Service
 @Log4j2
 public class PokeApiServiceImpl implements PokeApiService {
@@ -34,10 +36,11 @@ public class PokeApiServiceImpl implements PokeApiService {
 
 
     @Override
-    public Mono<PokeApiPokemonList> getAllPokemon() {
+    public Mono<PokeApiPokemonList> getAllPokemon(int limit, int offset) {
         return webClient.get()
-                .uri("/pokemon")
-                .retrieve().bodyToMono(PokeApiPokemonList.class);
+                .uri(uriBuilder -> uriBuilder.path("/pokemon").queryParam("limit", limit).queryParam("offset", offset).build())
+                .retrieve()
+                .bodyToMono(PokeApiPokemonList.class);
     }
 
     @Override

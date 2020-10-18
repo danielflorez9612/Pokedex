@@ -1,11 +1,10 @@
 package com.daniel.modyo.service;
 
 import com.daniel.modyo.web.dto.Pokemon;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 public interface PokemonService {
-    List<Pokemon> getAllPokemon();
+    Flux<Pokemon> getAllPokemon(int limit, int offset);
     Mono<Pokemon> getPokemon(String name);
 }

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface PokeApiService {
     Mono<Pokemon> getPokemon(String name);
-    Mono<PokeApiPokemonList> getAllPokemon();
+    Mono<PokeApiPokemonList> getAllPokemon(int limit, int offset);
     Mono<PokemonSpecies> getSpecies(String species);
     Mono<EvolutionChain> getEvolutionChain(PokeApiNamedResource evolutionChain);
 }

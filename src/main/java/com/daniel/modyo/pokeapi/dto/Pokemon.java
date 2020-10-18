@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class Pokemon {
+    private Integer id;
     private List<PokeApiAbilityItem> abilities;
     @JsonProperty("base_experience")
     private Integer baseExperience;

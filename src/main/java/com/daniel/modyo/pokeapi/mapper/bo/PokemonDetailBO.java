@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PokemonBO {
+public class PokemonDetailBO {
     private Pokemon pokemon;
     private PokemonSpecies pokemonSpecies;
     private EvolutionChain evolutionChain;

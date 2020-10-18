@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 @Builder
 public class Pokemon {
+    private Integer id;
     private String name;
     private String type;
     private Integer weight;
