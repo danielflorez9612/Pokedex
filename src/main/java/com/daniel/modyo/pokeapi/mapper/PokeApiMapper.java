@@ -48,6 +48,7 @@ public class PokeApiMapper {
                 .image(pokemonBO.getPokemon().getSprites().getOther().getOfficialArtwork().getFrontDefault())
                 .description(
                         pokemonBO.getPokemonSpecies().getFlavorTextEntries().stream()
+                                .filter(flavorText -> flavorText.getLanguage().getName().equals("en"))
                                 .findFirst()
                                 .map(FlavorText::getFlavorText)
                                 .orElse("No description.")
