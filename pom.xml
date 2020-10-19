@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.daniel</groupId>
-    <artifactId>modyo</artifactId>
+    <artifactId>pokedex</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>modyo</name>
     <description>Spring Boot Test</description>
