@@ -4,7 +4,7 @@ import com.daniel.modyo.pokeapi.dto.PokeApiNamedResource;
 import com.daniel.modyo.pokeapi.dto.PokeApiPokemonList;
 import com.daniel.modyo.pokeapi.mapper.PokeApiMapper;
 import com.daniel.modyo.pokeapi.mapper.bo.PokemonDetailBO;
-import com.daniel.modyo.web.dto.Pokemon;
+import com.daniel.modyo.web.dto.PokemonDto;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class PokemonServiceImpl implements PokemonService {
     private PokeApiMapper pokeApiMapper;
 
     @Override
-    public Flux<Pokemon> getAllPokemon(int limit, int offset) {
+    public Flux<PokemonDto> getAllPokemon(int limit, int offset) {
         return pokeApiService.getAllPokemon(limit, offset)
                 .map(PokeApiPokemonList::getResults)
                 .flatMapMany(Flux::fromIterable)
@@ -31,7 +31,7 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
-    public Mono<Pokemon> getPokemon(String name) {
+    public Mono<PokemonDto> getPokemon(String name) {
         return pokeApiService.getPokemon(name)
                 .flatMap(pokemon -> pokeApiService.getSpecies(pokemon.getSpecies().getName())
                         .flatMap(pokemonSpecies -> pokeApiService.getEvolutionChain(pokemonSpecies.getEvolutionChain())

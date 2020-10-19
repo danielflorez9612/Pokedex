@@ -5,6 +5,7 @@ import com.daniel.modyo.pokeapi.dto.PokeApiPokemonList;
 import com.daniel.modyo.pokeapi.dto.Pokemon;
 import com.daniel.modyo.pokeapi.dto.evolution.EvolutionChain;
 import com.daniel.modyo.pokeapi.dto.species.PokemonSpecies;
+import com.daniel.modyo.web.dto.PokemonDto;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ public class PokemonServiceImplTest {
                 .thenReturn(just(fromFile("species/bulbasaur.json", PokemonSpecies.class)));
         Mockito.when(pokeApiService.getSpecies(eq("ivysaur")))
                 .thenReturn(just(fromFile("species/ivysaur.json", PokemonSpecies.class)));
-        List<com.daniel.modyo.web.dto.Pokemon> list = pokemonService.getAllPokemon(0, 0).collectList().block();
+        List<PokemonDto> list = pokemonService.getAllPokemon(0, 0).collectList().block();
         assertThat(list, hasSize(2));
         assertThat(list, everyItem(
                 allOf(
@@ -63,7 +64,7 @@ public class PokemonServiceImplTest {
                 .thenReturn(just(fromFile("species/bulbasaur.json", PokemonSpecies.class)));
         Mockito.when(pokeApiService.getEvolutionChain(ArgumentMatchers.any(PokeApiNamedResource.class)))
                 .thenReturn(just(fromFile("evolutionchain/1.json", EvolutionChain.class)));
-        com.daniel.modyo.web.dto.Pokemon bulbasaur = pokemonService.getPokemon("bulbasaur").block();
+        PokemonDto bulbasaur = pokemonService.getPokemon("bulbasaur").block();
         assertThat(bulbasaur, allOf(
                 hasProperty("id", equalTo(1)),
                 hasProperty("type", equalTo("grass/poison")),

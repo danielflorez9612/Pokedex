@@ -3,10 +3,13 @@ package com.daniel.modyo.pokeapi.mapper;
 import com.daniel.modyo.pokeapi.dto.PokeApiAbilityItem;
 import com.daniel.modyo.pokeapi.dto.PokeApiNamedResource;
 import com.daniel.modyo.pokeapi.dto.PokeApiTypeItem;
+import com.daniel.modyo.pokeapi.dto.Pokemon;
 import com.daniel.modyo.pokeapi.dto.evolution.ChainLink;
+import com.daniel.modyo.pokeapi.dto.evolution.EvolutionChain;
 import com.daniel.modyo.pokeapi.dto.species.FlavorText;
+import com.daniel.modyo.pokeapi.dto.species.PokemonSpecies;
 import com.daniel.modyo.pokeapi.mapper.bo.PokemonDetailBO;
-import com.daniel.modyo.web.dto.Pokemon;
+import com.daniel.modyo.web.dto.PokemonDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -28,57 +31,55 @@ public class PokeApiMapper {
         }
     }
 
-    public Pokemon map(PokemonDetailBO pokemonBO) {
-        return Pokemon.builder()
+    private static List<String> getAbilities(Pokemon pokemon) {
+        return pokemon.getAbilities().stream()
+                .map(PokeApiAbilityItem::getAbility)
+                .map(PokeApiNamedResource::getName)
+                .collect(Collectors.toList());
+    }
+
+    private static String getTypes(Pokemon pokemon) {
+        return pokemon.getTypes().stream()
+                .map(PokeApiTypeItem::getType)
+                .map(PokeApiNamedResource::getName)
+                .collect(Collectors.joining("/"));
+    }
+
+    private static List<String> getEvolutions(PokeApiNamedResource species, EvolutionChain evolutionChain) {
+        return getEvolutionChainFor(species, evolutionChain.getChain()).stream()
+                .map(ChainLink::getSpecies)
+                .map(PokeApiNamedResource::getName)
+                .collect(Collectors.toList());
+    }
+
+    private static String getDescription(PokemonSpecies species) {
+        return species.getFlavorTextEntries().stream()
+                .filter(flavorText -> flavorText.getLanguage().getName().equals("en"))
+                .findFirst()
+                .map(FlavorText::getFlavorText)
+                .orElse("No description.");
+    }
+
+    public PokemonDto map(PokemonDetailBO pokemonBO) {
+        return PokemonDto.builder()
                 .id(pokemonBO.getPokemon().getId())
                 .name(pokemonBO.getPokemon().getName())
                 .weight(pokemonBO.getPokemon().getWeight())
-                .abilities(
-                        pokemonBO.getPokemon().getAbilities().stream()
-                                .map(PokeApiAbilityItem::getAbility)
-                                .map(PokeApiNamedResource::getName)
-                                .collect(Collectors.toList())
-                )
-                .type(
-                        pokemonBO.getPokemon().getTypes().stream()
-                                .map(PokeApiTypeItem::getType)
-                                .map(PokeApiNamedResource::getName)
-                                .collect(Collectors.joining("/"))
-                )
+                .abilities(getAbilities(pokemonBO.getPokemon()))
+                .type(getTypes(pokemonBO.getPokemon()))
                 .image(pokemonBO.getPokemon().getSprites().getOther().getOfficialArtwork().getFrontDefault())
-                .description(
-                        pokemonBO.getPokemonSpecies().getFlavorTextEntries().stream()
-                                .filter(flavorText -> flavorText.getLanguage().getName().equals("en"))
-                                .findFirst()
-                                .map(FlavorText::getFlavorText)
-                                .orElse("No description.")
-                )
-                .evolutions(
-                        getEvolutionChainFor(pokemonBO.getPokemon().getSpecies(), pokemonBO.getEvolutionChain().getChain()).stream()
-                                .map(ChainLink::getSpecies)
-                                .map(PokeApiNamedResource::getName)
-                                .collect(Collectors.toList())
-                )
+                .description(getDescription(pokemonBO.getPokemonSpecies()))
+                .evolutions(getEvolutions(pokemonBO.getPokemon().getSpecies(), pokemonBO.getEvolutionChain()))
                 .build();
     }
 
-    public Pokemon mapListItem(com.daniel.modyo.pokeapi.dto.Pokemon pokemon) {
-        return Pokemon.builder()
+    public PokemonDto mapListItem(Pokemon pokemon) {
+        return PokemonDto.builder()
                 .id(pokemon.getId())
                 .name(pokemon.getName())
                 .weight(pokemon.getWeight())
-                .type(
-                        pokemon.getTypes().stream()
-                                .map(PokeApiTypeItem::getType)
-                                .map(PokeApiNamedResource::getName)
-                                .collect(Collectors.joining("/"))
-                )
-                .abilities(
-                        pokemon.getAbilities().stream()
-                                .map(PokeApiAbilityItem::getAbility)
-                                .map(PokeApiNamedResource::getName)
-                                .collect(Collectors.toList())
-                )
+                .type(getTypes(pokemon))
+                .abilities(getAbilities(pokemon))
                 .image(pokemon.getSprites().getOther().getOfficialArtwork().getFrontDefault())
                 .build();
     }

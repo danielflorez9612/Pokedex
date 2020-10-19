@@ -1,7 +1,7 @@
 package com.daniel.modyo.controller;
 
 import com.daniel.modyo.service.PokemonService;
-import com.daniel.modyo.web.dto.Pokemon;
+import com.daniel.modyo.web.dto.PokemonDto;
 import com.daniel.modyo.web.pagination.PaginationComponent;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class PokemonControllerTest {
 
     @Test
     public void testAllPokemonFirstPage() {
-        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(Pokemon.builder()
+        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(PokemonDto.builder()
                 .id(1)
                 .type("type")
                 .name("test")
@@ -49,7 +49,7 @@ public class PokemonControllerTest {
 
     @Test
     public void testAllPokemonSecondPage() {
-        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(Pokemon.builder()
+        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(PokemonDto.builder()
                 .id(1)
                 .type("type")
                 .name("test")
@@ -65,7 +65,7 @@ public class PokemonControllerTest {
     }
     @Test
     public void testHeaderPreviousIsPresent() {
-        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(Pokemon.builder()
+        Mockito.when(pokemonService.getAllPokemon(anyInt(), anyInt())).thenReturn(Flux.just(PokemonDto.builder()
                 .id(1)
                 .type("type")
                 .name("test")

@@ -1,7 +1,7 @@
 package com.daniel.modyo.controller;
 
 import com.daniel.modyo.service.PokemonService;
-import com.daniel.modyo.web.dto.Pokemon;
+import com.daniel.modyo.web.dto.PokemonDto;
 import com.daniel.modyo.web.pagination.PaginationComponent;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +23,17 @@ public class PokemonController {
     private PaginationComponent paginationComponent;
 
     @GetMapping
-    public Flux<Pokemon> getAllPokemon(
+    public Flux<PokemonDto> getAllPokemon(
             @RequestParam(name = PaginationComponent.LIMIT, defaultValue = PaginationComponent.DEFAULT_LIMIT) int limit,
             @RequestParam(name = PaginationComponent.OFFSET, defaultValue = PaginationComponent.DEFAULT_OFFSET) int offset,
             ServerHttpResponse response
     ) {
         paginationComponent.setPaginationHeaders(limit, offset, response);
-        return pokemonService.getAllPokemon(limit, offset).sort(Comparator.comparing(Pokemon::getId));
+        return pokemonService.getAllPokemon(limit, offset).sort(Comparator.comparing(PokemonDto::getId));
     }
 
     @GetMapping("/{name}")
-    public Mono<Pokemon> getPokemon(@PathVariable("name") String name) {
+    public Mono<PokemonDto> getPokemon(@PathVariable("name") String name) {
         return pokemonService.getPokemon(name);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class Pokemon {
+public class PokemonDto {
     private Integer id;
     private String name;
     private String type;
