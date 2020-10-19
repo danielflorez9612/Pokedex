@@ -5,21 +5,20 @@ import com.daniel.modyo.pokeapi.dto.PokeApiPokemonList;
 import com.daniel.modyo.pokeapi.dto.Pokemon;
 import com.daniel.modyo.pokeapi.dto.evolution.EvolutionChain;
 import com.daniel.modyo.pokeapi.dto.species.PokemonSpecies;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-@Log4j2
+@Cacheable("pokemon")
 public class PokeApiServiceImpl implements PokeApiService {
 
     private final WebClient webClient;
 
-    private String pokeApiEndpoint;
+    private final String pokeApiEndpoint;
 
     public PokeApiServiceImpl(@Value("${pokeapi.url}") String pokeApiEndpoint, @Autowired WebClient webClient) {
         this.pokeApiEndpoint = pokeApiEndpoint;
@@ -30,7 +29,9 @@ public class PokeApiServiceImpl implements PokeApiService {
     public Mono<Pokemon> getPokemon(String name) {
         return webClient.get()
                 .uri("/pokemon/{name}", name)
-                .retrieve().bodyToMono(Pokemon.class);
+                .retrieve()
+                .bodyToMono(Pokemon.class)
+                .cache();
     }
 
 
@@ -39,20 +40,26 @@ public class PokeApiServiceImpl implements PokeApiService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/pokemon").queryParam("limit", limit).queryParam("offset", offset).build())
                 .retrieve()
-                .bodyToMono(PokeApiPokemonList.class);
+                .bodyToMono(PokeApiPokemonList.class)
+                .cache()
+                ;
     }
 
     @Override
     public Mono<PokemonSpecies> getSpecies(String species) {
         return webClient.get()
                 .uri("/pokemon-species/{species}", species)
-                .retrieve().bodyToMono(PokemonSpecies.class);
+                .retrieve()
+                .bodyToMono(PokemonSpecies.class)
+                .cache();
     }
 
     @Override
     public Mono<EvolutionChain> getEvolutionChain(PokeApiNamedResource evolutionChain) {
         return webClient.get()
                 .uri(evolutionChain.getUrl().replace(pokeApiEndpoint, ""))
-                .retrieve().bodyToMono(EvolutionChain.class);
+                .retrieve()
+                .bodyToMono(EvolutionChain.class)
+                .cache();
     }
 }
