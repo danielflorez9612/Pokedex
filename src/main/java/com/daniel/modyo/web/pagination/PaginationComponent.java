@@ -1,9 +1,9 @@
 package com.daniel.modyo.web.pagination;
 
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class PaginationComponent {
@@ -14,13 +14,13 @@ public class PaginationComponent {
     public static final String NEXT = "next";
     public static final String PREVIOUS = "previous";
 
-    public void setPaginationHeaders(int limit, int offset, HttpServletResponse response) {
-        response.setHeader(LIMIT, String.valueOf(limit));
-        response.setHeader(OFFSET, String.valueOf(offset));
-        response.setHeader(NEXT, UriComponentsBuilder.newInstance().queryParam(OFFSET, offset + limit).queryParam(LIMIT, limit).build().toUriString());
+    public void setPaginationHeaders(int limit, int offset, ServerHttpResponse response) {
+        response.getHeaders().set(LIMIT, String.valueOf(limit));
+        response.getHeaders().set(OFFSET, String.valueOf(offset));
+        response.getHeaders().set(NEXT, UriComponentsBuilder.newInstance().queryParam(OFFSET, offset + limit).queryParam(LIMIT, limit).build().toUriString());
         int previousOffset = Math.max(offset - limit, 0);
         if (previousOffset > 0) {
-            response.setHeader(PREVIOUS, UriComponentsBuilder.newInstance().queryParam(OFFSET, previousOffset).queryParam(LIMIT, limit).toUriString());
+            response.getHeaders().set(PREVIOUS, UriComponentsBuilder.newInstance().queryParam(OFFSET, previousOffset).queryParam(LIMIT, limit).toUriString());
         }
     }
 }

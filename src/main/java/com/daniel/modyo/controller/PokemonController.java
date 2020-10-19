@@ -5,11 +5,11 @@ import com.daniel.modyo.web.dto.Pokemon;
 import com.daniel.modyo.web.pagination.PaginationComponent;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Comparator;
 
 @RestController
@@ -26,7 +26,7 @@ public class PokemonController {
     public Flux<Pokemon> getAllPokemon(
             @RequestParam(name = PaginationComponent.LIMIT, defaultValue = PaginationComponent.DEFAULT_LIMIT) int limit,
             @RequestParam(name = PaginationComponent.OFFSET, defaultValue = PaginationComponent.DEFAULT_OFFSET) int offset,
-            HttpServletResponse response
+            ServerHttpResponse response
     ) {
         paginationComponent.setPaginationHeaders(limit, offset, response);
         return pokemonService.getAllPokemon(limit, offset).sort(Comparator.comparing(Pokemon::getId));
