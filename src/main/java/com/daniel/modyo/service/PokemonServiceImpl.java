@@ -26,7 +26,7 @@ public class PokemonServiceImpl implements PokemonService {
                 .map(PokeApiPokemonList::getResults)
                 .flatMapMany(Flux::fromIterable)
                 .map(PokeApiNamedResource::getName)
-                .flatMap(pokeApiService::getPokemon)
+                .flatMap(name -> pokeApiService.getPokemon(name).onErrorResume(e-> Mono.empty()))
                 .map(pokeApiMapper::mapListItem);
     }
 
