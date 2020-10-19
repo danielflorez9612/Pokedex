@@ -18,6 +18,9 @@ public class PaginationComponent {
         response.setHeader(LIMIT, String.valueOf(limit));
         response.setHeader(OFFSET, String.valueOf(offset));
         response.setHeader(NEXT, UriComponentsBuilder.newInstance().queryParam(OFFSET, offset + limit).queryParam(LIMIT, limit).build().toUriString());
-        response.setHeader(PREVIOUS, UriComponentsBuilder.newInstance().queryParam(OFFSET, Math.max(offset - limit, 0)).queryParam(LIMIT, limit).toUriString());
+        int previousOffset = Math.max(offset - limit, 0);
+        if (previousOffset > 0) {
+            response.setHeader(PREVIOUS, UriComponentsBuilder.newInstance().queryParam(OFFSET, previousOffset).queryParam(LIMIT, limit).toUriString());
+        }
     }
 }
