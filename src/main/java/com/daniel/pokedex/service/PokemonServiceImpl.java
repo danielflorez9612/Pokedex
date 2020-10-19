@@ -38,6 +38,7 @@ public class PokemonServiceImpl implements PokemonService {
                         .flatMap(pokemonSpecies -> pokemonRepository.getEvolutionChain(pokemonSpecies.getEvolutionChain())
                                 .map(evolutionChain -> new PokemonDetailBO(pokemon, pokemonSpecies, evolutionChain))))
                 .map(pokeApiMapper::map)
+                .onErrorResume(e -> Mono.empty())
                 ;
     }
 }

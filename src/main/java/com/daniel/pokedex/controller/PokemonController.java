@@ -5,6 +5,7 @@ import com.daniel.pokedex.web.dto.PokemonDto;
 import com.daniel.pokedex.web.pagination.PaginationComponent;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -33,7 +34,7 @@ public class PokemonController {
     }
 
     @GetMapping("/{name}")
-    public Mono<PokemonDto> getPokemon(@PathVariable("name") String name) {
-        return pokemonService.getPokemon(name);
+    public Mono<ResponseEntity<PokemonDto>> getPokemon(@PathVariable("name") String name) {
+        return pokemonService.getPokemon(name).map(ResponseEntity::ok).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 }
