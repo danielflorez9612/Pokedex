@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -45,6 +46,25 @@ public class PokemonControllerTest {
                 .expectHeader().doesNotExist("previous")
                 .expectBody().jsonPath("$", Matchers.hasSize(1))
         ;
+    }
+
+    @Test
+    public void testGetPokemon() {
+        Mockito.when(pokemonService.getPokemon(eq("bulbasaur"))).thenReturn(Mono.just(PokemonDto.builder()
+                .id(1)
+                .type("type")
+                .name("test")
+                .build()));
+        webClient.get().uri("/pokemon/bulbasaur").exchange()
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.id",1);
+    }
+
+    @Test
+    public void testPokemonNotFound() {
+        Mockito.when(pokemonService.getPokemon(eq("ivysaur"))).thenReturn(Mono.empty());
+        webClient.get().uri("/pokemon/ivysaur").exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
