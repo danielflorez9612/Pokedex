@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-@Cacheable("pokemon")
 public class PokeApiServiceImpl implements PokeApiService {
 
     private final WebClient webClient;
@@ -26,16 +25,19 @@ public class PokeApiServiceImpl implements PokeApiService {
     }
 
     @Override
+    @Cacheable("pokemon")
     public Mono<Pokemon> getPokemon(String name) {
         return webClient.get()
                 .uri("/pokemon/{name}", name)
                 .retrieve()
                 .bodyToMono(Pokemon.class)
-                .cache();
+                .cache()
+                ;
     }
 
 
     @Override
+    @Cacheable("pokemonList")
     public Mono<PokeApiPokemonList> getAllPokemon(int limit, int offset) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/pokemon").queryParam("limit", limit).queryParam("offset", offset).build())
@@ -46,20 +48,24 @@ public class PokeApiServiceImpl implements PokeApiService {
     }
 
     @Override
+    @Cacheable("species")
     public Mono<PokemonSpecies> getSpecies(String species) {
         return webClient.get()
-                .uri("/pokemon-species/{species}", species)
+                .uri(uriBuilder -> uriBuilder.pathSegment("pokemon-species", species).path("/").build())
                 .retrieve()
                 .bodyToMono(PokemonSpecies.class)
-                .cache();
+                .cache()
+                ;
     }
 
     @Override
+    @Cacheable("evolutionChains")
     public Mono<EvolutionChain> getEvolutionChain(PokeApiNamedResource evolutionChain) {
         return webClient.get()
                 .uri(evolutionChain.getUrl().replace(pokeApiEndpoint, ""))
                 .retrieve()
                 .bodyToMono(EvolutionChain.class)
-                .cache();
+                .cache()
+                ;
     }
 }
